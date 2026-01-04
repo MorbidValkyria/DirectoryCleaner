@@ -1,0 +1,14 @@
+/home/francisco/Projects/csharp/DirectoryCleaner/bin/Debug/net9.0/DirectoryCleaner
+/home/francisco/Projects/csharp/DirectoryCleaner/bin/Debug/net9.0/DirectoryCleaner.deps.json
+/home/francisco/Projects/csharp/DirectoryCleaner/bin/Debug/net9.0/DirectoryCleaner.runtimeconfig.json
+/home/francisco/Projects/csharp/DirectoryCleaner/bin/Debug/net9.0/DirectoryCleaner.dll
+/home/francisco/Projects/csharp/DirectoryCleaner/bin/Debug/net9.0/DirectoryCleaner.pdb
+/home/francisco/Projects/csharp/DirectoryCleaner/obj/Debug/net9.0/DirectoryCleaner.GeneratedMSBuildEditorConfig.editorconfig
+/home/francisco/Projects/csharp/DirectoryCleaner/obj/Debug/net9.0/DirectoryCleaner.AssemblyInfoInputs.cache
+/home/francisco/Projects/csharp/DirectoryCleaner/obj/Debug/net9.0/DirectoryCleaner.AssemblyInfo.cs
+/home/francisco/Projects/csharp/DirectoryCleaner/obj/Debug/net9.0/DirectoryCleaner.csproj.CoreCompileInputs.cache
+/home/francisco/Projects/csharp/DirectoryCleaner/obj/Debug/net9.0/DirectoryCleaner.dll
+/home/francisco/Projects/csharp/DirectoryCleaner/obj/Debug/net9.0/refint/DirectoryCleaner.dll
+/home/francisco/Projects/csharp/DirectoryCleaner/obj/Debug/net9.0/DirectoryCleaner.pdb
+/home/francisco/Projects/csharp/DirectoryCleaner/obj/Debug/net9.0/DirectoryCleaner.genruntimeconfig.cache
+/home/francisco/Projects/csharp/DirectoryCleaner/obj/Debug/net9.0/ref/DirectoryCleaner.dll
