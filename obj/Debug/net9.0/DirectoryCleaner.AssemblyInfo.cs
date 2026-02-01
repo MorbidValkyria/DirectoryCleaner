@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DirectoryCleaner")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9163fd3754eb2fd9db386aa802a879235fa8f70f")]
 [assembly: System.Reflection.AssemblyProductAttribute("DirectoryCleaner")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DirectoryCleaner")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
