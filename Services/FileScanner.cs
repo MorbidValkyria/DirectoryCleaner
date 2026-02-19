@@ -13,10 +13,15 @@ namespace DirectoryCleaner.Services;
 public class FileScanner
 {
     private readonly Options _options;
-    
-    public FileScanner(Options options)
+    private readonly Logger _logger;
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="options"></param>
+    public FileScanner(Options options, Logger logger)
     {
         _options = options;
+        _logger = logger;
     }
     
     public IEnumerable<FileItem> Scan()
@@ -26,7 +31,7 @@ public class FileScanner
             : SearchOption.TopDirectoryOnly;
         
         if (_options.Verbose)
-            Logger.Info($"Scanning with option: {searchOption}");
+            _logger.Info($"Scanning with option: {searchOption}");
         
         IEnumerable<string> files;
         try
@@ -38,12 +43,12 @@ public class FileScanner
         }
         catch (UnauthorizedAccessException)
         {
-            Logger.Error($"Access denied to {_options.TargetPath}");
+            _logger.Error($"Access denied to {_options.TargetPath}");
             yield break;
         }
         catch (DirectoryNotFoundException)
         {
-            Logger.Error($"Directory not found: {_options.TargetPath}");
+            _logger.Error($"Directory not found: {_options.TargetPath}");
             yield break;
         }
         
@@ -57,7 +62,7 @@ public class FileScanner
             {
                 skipped++;
                 if (_options.Verbose)
-                    Logger.Info($"Skipping: {Path.GetFileName(filePath)}");
+                    _logger.Info($"Skipping: {Path.GetFileName(filePath)}");
                 continue;
             }
             
@@ -68,11 +73,11 @@ public class FileScanner
                 count++;
                 
                 if (_options.Verbose && count % 10 == 0)
-                    Logger.Info($"Scanned {count} files...");
+                    _logger.Info($"Scanned {count} files...");
             }
             catch (Exception ex)
             {
-                Logger.Warning($"Could not process {filePath}: {ex.Message}");
+                _logger.Warning($"Could not process {filePath}: {ex.Message}");
                 continue;
             }
             
@@ -82,9 +87,9 @@ public class FileScanner
         
         if (_options.Verbose)
         {
-            Logger.Success($"Scan complete: {count} total files");
+            _logger.Success($"Scan complete: {count} total files");
             if (skipped > 0)
-                Logger.Info($"Skipped {skipped} hidden/temp files");
+                _logger.Info($"Skipped {skipped} hidden/temp files");
         }
     }
     private bool ShouldSkip(string path)

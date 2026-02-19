@@ -1,95 +1,101 @@
 using DirectoryCleaner.Arguments;
 using DirectoryCleaner.Services;
-using DirectoryCleaner.Core;
+using DirectoryCleaner.Utils;
 
 namespace DirectoryCleaner.Core;
 
 public class Cleaner
 {
     private readonly Options _options;
-    
-    public Cleaner(Options options)
+    private readonly Logger _logger;
+
+    public Cleaner(Options options, Logger logger)
     {
         _options = options;
+        _logger = logger;
     }
-    
+
     public void Run()
     {
-        Console.WriteLine($"Cleaning directory: {_options.TargetPath}");
-        Console.WriteLine($"Mode: {(_options.DryRun ? "DRY RUN (no changes will be made)" : "LIVE")}");
-        Console.WriteLine($"Recursive: {_options.Recursive}");
-        Console.WriteLine();
-        
-        // 1. Scan files
-        var scanner = new FileScanner(_options);
+        _logger.Info($"Cleaning: {_options.TargetPath} [{(_options.DryRun ? "DRY RUN" : "LIVE")}{(_options.Recursive ? ", recursive" : "")}]");
+        _logger.EmptyLine();
+
+        var scanner = new FileScanner(_options, _logger);
         var files = scanner.Scan().ToList();
-        
-        Console.WriteLine($"Found {files.Count} files");
-        Console.WriteLine();
-        
-        // 2. Apply rules to determine actions
+
+        if (files.Count == 0)
+        {
+            _logger.Warning("No files found to scan");
+            return;
+        }
+
+        _logger.Info($"Found {files.Count} files");
+        _logger.EmptyLine();
+
         var ruleEngine = new RuleEngine(_options.TargetPath);
-        var actions = new List<FileAction>();
-        
-        foreach (var file in files)
-        {
-            var action = ruleEngine.DetermineAction(file);
-            if (action != null)
-            {
-                actions.Add(action);
-            }
-        }
-        
-        Console.WriteLine($"{actions.Count} files will be organized");
-        Console.WriteLine();
-        
-        // 3. Execute or preview actions
-        if (_options.DryRun)
-        {
-            PreviewActions(actions);
-        }
+        var actions = files
+            .Select(f => ruleEngine.DetermineAction(f))
+            .Where(a => a != null)
+            .Cast<FileAction>()
+            .ToList();
+
+        if (actions.Count > 0)
+            _logger.Success($"{actions.Count} files will be organized");
         else
-        {
+            _logger.Warning("No files found to organize");
+
+        _logger.EmptyLine();
+
+        if (_options.DryRun)
+            PreviewActions(actions);
+        else
             ExecuteActions(actions);
-        }
-        
-        Console.WriteLine();
-        Console.WriteLine("Done!");
+
+        _logger.EmptyLine();
+        _logger.Success("Done!");
     }
-    
+
     private void PreviewActions(List<FileAction> actions)
     {
-        Console.WriteLine("=== DRY RUN - Preview of changes ===");
+        _logger.Separator();
+        _logger.Info("DRY RUN - Preview of changes");
+        _logger.Separator();
+        _logger.EmptyLine();
+
         foreach (var action in actions)
         {
-            Console.WriteLine($"WOULD MOVE: {action.SourcePath}");
-            Console.WriteLine($"        TO: {action.DestinationPath}");
-            Console.WriteLine();
+            _logger.Info($"WOULD MOVE: {action.SourcePath}");
+            _logger.Info($"        TO: {action.DestinationPath}");
+            _logger.EmptyLine();
         }
     }
-    
+
     private void ExecuteActions(List<FileAction> actions)
     {
         var mover = new FileMover(_options);
         int successCount = 0;
         int failCount = 0;
-        
+
         foreach (var action in actions)
         {
             try
             {
                 mover.Move(action);
                 successCount++;
-                Console.WriteLine($"✓ Moved: {action.SourcePath}");
+                _logger.Success($"Moved: {action.SourcePath}");
             }
             catch (Exception ex)
             {
                 failCount++;
-                Console.WriteLine($"✗ Failed: {action.SourcePath} - {ex.Message}");
+                _logger.Error($"Failed: {action.SourcePath} - {ex.Message}");
             }
         }
-        
-        Console.WriteLine();
-        Console.WriteLine($"Success: {successCount}, Failed: {failCount}");
+
+        _logger.EmptyLine();
+
+        if (failCount == 0)
+            _logger.Success($"All {successCount} files moved successfully");
+        else
+            _logger.Warning($"Success: {successCount}, Failed: {failCount}");
     }
 }

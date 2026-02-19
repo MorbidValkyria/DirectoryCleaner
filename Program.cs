@@ -1,5 +1,6 @@
 ﻿using DirectoryCleaner.Arguments;
 using DirectoryCleaner.Core;
+using DirectoryCleaner.Utils;
 
 var options = Options.Parse(args);
 
@@ -9,8 +10,12 @@ if (options.GetHelp || !options.IsValid)
     return options.IsValid ? 0 : 1;
 }
 
-var cleaner = new Cleaner(options);
-cleaner.Run();
+var logger = new Logger();
+if (options.LogFile != null)
+    logger.EnableFileLogging(options.LogFile);
+
+var cleaner = new Cleaner(options, logger);
+
 
 return 0;
 
@@ -18,27 +23,3 @@ return 0;
 
 // logger.Info($"Using target directory: {options.TargetPath}");
 
-
-
-
-/*
-DirectoryCleaner/
-├── DirectoryCleaner.sln
-├── DirectoryCleaner.csproj
-├── Program.cs
-├── Arguments/
-│   └── Options.cs
-├── Core/
-│   ├── Cleaner.cs
-│   ├── RuleEngine.cs
-│   └── FileAction.cs
-├── Services/
-│   ├── FileScanner.cs
-│   └── FileMover.cs
-├── Utils/
-│   ├── Logger.cs
-│   └── PathHelper.cs
-└── Models/
-    └── FileItem.cs
-└── README.md
-*/
